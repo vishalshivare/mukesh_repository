@@ -1,0 +1,574 @@
+
+<html>
+<head>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+<script type="text/javascript">
+
+//METHOD TO HIDE ALL PAGE CONTENTS
+function hideAll()
+{
+	document.getElementById("div1").style.display="none";
+	document.getElementById("div2").style.display="none";
+	document.getElementById("div3").style.display="none";
+	document.getElementById("div4").style.display="none";
+	document.getElementById("id1").style.display="none";
+	document.getElementById("div5").style.display="none";
+	document.getElementById("div7").style.display="none";
+	document.getElementById("pr2").style.display="none";
+	document.getElementById("pr1").style.display="none";
+}
+
+function showRegisterPage()
+{     hideAll();
+	document.getElementById("div1").style.display="inline";
+	document.getElementById("roll").value="";
+	document.getElementById("name").value="";
+	document.getElementById("age").value="";
+	document.getElementById("email").value="";
+	document.getElementById("mobile").value="";
+	document.getElementById("eMobile").value="";
+	document.getElementById("address").value="";
+	document.getElementById("dob").value="";
+	document.getElementById("course").value="";
+	
+}
+//METHOD TO LOGIN
+function login()
+{
+	var stu="true";
+	var url = "http://192.168.50.184:8090/login?roll="+document.getElementById("rollL").value+"&name="+document.getElementById("nameL").value;
+	xhr=new XMLHttpRequest();
+	xhr.open("GET",url,true)
+	xhr.setRequestHeader("Content-type", "application/json"); //alert(url);
+    var data=JSON.stringify({
+        "roll":document.getElementById("rollL").value,
+        "name":document.getElementById("nameL").value});  //alert(data); 
+	xhr.onreadystatechange=function()
+	{	
+		 if(xhr.readyState==4 && xhr.status==200)
+			 { 
+			   var result=xhr.responseText;
+			    //alert(result);
+                 if(stu==result)
+                 {
+           	      //alert("login Successed");
+           	       document.getElementById("div9").style.display="inline";
+           	       document.getElementById("div6").style.display="none";
+           	       
+           	     }
+            else
+            	{
+            	document.getElementById("div6").style.display="inline";
+            	document.getElementById("error").innerHTML="Invalid User/Passward";
+            	//alert("login Failed");
+            	}
+            	
+			 }
+		 else
+			 {
+			  document.getElementById("error").innerHTML="Invalid User/Passward";
+			  document.getElementById("error").style.color="red";
+			 }
+	};
+	xhr.send();	
+	//alert("after Sent");
+	hideAll();
+}
+
+//METHOD TO LOGOUT
+function logout()
+{          hideAll();
+	       document.getElementById("div9").style.display="none";
+	       document.getElementById("div6").style.display="inline";
+	       document.getElementById("error").innerHTML="";
+	       if(!(document.getElementById('check').checked))
+	    	   {
+	    	     document.getElementById("rollL").value="";
+		         document.getElementById("nameL").value="";
+	    	   }
+	      
+}
+
+//METHOD TO INSERT RECORD INTO STUDENT DATABASE
+function register()
+{
+	
+	var name =document.getElementById("name").value;
+	var age =document.getElementById("age").value;
+	var x = document.getElementById("email").value;
+	var mobile=document.getElementById("mobile").value;
+	emobile=document.getElementById("eMobile").value;
+	var error=0;
+	var msg="";
+	
+	document.getElementById("a").innerHTML="";
+	document.getElementById("e").innerHTML="";
+	document.getElementById("m").innerHTML="";
+	document.getElementById("em").innerHTML="";
+	document.getElementById("n").innerHTML="";
+	
+	
+	/*  if((isNaN(roll) || roll<=0))
+	{
+		 error=1;
+		 document.getElementById("r").innerHTML="Roll No. must be greater than 0";
+	} */
+	 if( name=="" || !isNaN(name))
+		 {
+		  error=1;
+		  document.getElementById("n").innerHTML="Enter Valid Name";
+		 }
+	
+	if((isNaN(age) || age<5 || age>35))
+	{
+		 document.getElementById("a").innerHTML="Age must be between 5 to 35 Yrs.";
+		error=1;
+	}
+	
+    var atpos = x.indexOf("@");
+    var dotpos = x.lastIndexOf(".");
+    if (atpos<1 || dotpos<atpos+2 || dotpos+2>=x.length)
+    {
+    	 document.getElementById("e").innerHTML="<br/>"+"Not a valid e-mail address";
+    	error=1;
+    }
+	
+	 if((isNaN(mobile) || mobile.length!=10))
+		{
+		 document.getElementById("m").innerHTML="<br/>"+"Enter 10-Digit MobileNumber";
+		error=1;
+		} 
+	
+	if((isNaN(emobile) || emobile.length!=10))
+	{
+		 document.getElementById("em").innerHTML="Enter 10-Digit Emergency MobileNumber";
+		error=1;
+	}
+	if(error==1)
+		{
+		 return false;
+		}
+	
+	
+	//alert("Validation End");
+	var stu;
+	var url = "http://192.168.50.184:8090/student";
+	xhr=new XMLHttpRequest();
+	xhr.open("POST",url,true)
+	xhr.setRequestHeader("Content-type", "application/json"); //alert(url);
+    var data=JSON.stringify({
+        "name":document.getElementById("name").value,
+        "age":document.getElementById("age").value,
+        "mailId":document.getElementById("email").value,
+        "address":document.getElementById("address").value,
+        "dob":document.getElementById("dob").value,
+        "courseName":document.getElementById("course").value,
+        "gender":document.getElementById("gender").value,
+        "mobileNo":document.getElementById("mobile").value,
+        "emergencyNo":document.getElementById("eMobile").value});  //alert(data); 
+	xhr.onreadystatechange=function()
+	{	
+		 if(xhr.readyState==4 && xhr.status==200)
+			 { 
+                 //alert(xhr.responseText);
+                 //hideAll();
+                 document.getElementById("id1").innerHTML=xhr.responseText;
+                 document.getElementById("name").value="";
+                 document.getElementById("dob").value=""
+			 }
+		 else
+			 {
+			 document.getElementById("div1").style.display="inline";
+			 document.getElementById("id1").style.display="inline";
+			 document.getElementById("id1").innerHTML=xhr.responseText;
+			 document.getElementById("id1").style.color="red";
+			 
+			 }
+	};
+	xhr.send(data);	
+	//alert("after Sent");
+	
+	document.getElementById("id1").innerHTML=xhr.responseText;
+	document.getElementById("id1").style.display="inline";
+	
+}
+// CALCULATE AGE
+function calcage()
+{
+	var dob=document.getElementById("dob").value;
+	var dat = new Date();
+	var curday = dat.getDate();
+	var curyear = dat.getFullYear();
+	var d=dob.substring(0,4);
+	document.getElementById("age").value=curyear - d;
+	
+}
+
+
+//MTHOD TO SELECT ALL RECORD FROM STUDENT DATABASE
+function selectAll()
+{
+	hideAll();
+	var stu=null;
+	var string="<table align='center' width='80%' class='table table-striped'> <tr class='bg-info' >  <th></th> <th>ROLL</th><th>NAME</th><th>AGE</th><th>DOB</th><th>Email_Id</th><th>ADDRESS</th><th>MOBILE</th></tr>";
+	xhr = new XMLHttpRequest();
+	var url = "http://192.168.50.184:8090/student"; 
+	xhr.open("GET", url, true);
+	xhr.setRequestHeader("Content-type", "application/json");  
+	xhr.onreadystatechange=function()
+	{
+		if( xhr.status==200 && xhr.readyState==4 )
+			{
+			  // alert(xhr.responseText);
+			   stu=JSON.parse(xhr.responseText);
+			   for(var i=0;i<stu.length-1;i++)
+				   {
+				    string=string+ "<tr class='bg-success'><td></td><td>"+stu[i].roll+"</td><td>"+stu[i].name+"</td><td>"+stu[i].age+"</td><td>"+stu[i].dob+"</td><td>"+stu[i].mailId+"</td><td>"+stu[i].address+"</td><td>"+stu[i].mobileNo+"</td></tr>";
+				   
+				   }
+			   string=string+"</table>";
+			   document.getElementById("id1").innerHTML=string;
+			   document.getElementById("id1").style.display="inline";
+			}
+	}
+	xhr.send();
+  }
+
+function getStudendByrollPage()
+{
+	hideAll();
+	document.getElementById("div2").style.display="inline";  
+	document.getElementById("rollfind").value="";
+}
+//METHOD TO GET STUDENT BY ROLL NUMBER
+function getStudendByroll()
+{
+	var roll=document.getElementById("rollfind").value;
+	if(isNaN(roll) || roll<=0)
+		{
+		 alert("Enter Valid Roll Number");
+		 return false;
+		}
+	var stu;
+	var string;
+	//alert("finding Detail...");
+	xhr=new XMLHttpRequest();
+	var url="http://192.168.50.184:8090/student/"+document.getElementById("rollfind").value;
+	xhr.open("GET",url,true);
+	xhr.setRequestHeader("Content-type", "application/json");  
+	xhr.onreadystatechange=function()
+	{
+		if(xhr.readyState==4 && xhr.status==200)
+			{
+			    //alert(xhr.responseText);
+			    stu=JSON.parse(xhr.responseText);
+			    string="<br/>ROLL:"+stu.roll+"<br/>NAME:"+stu.name+"<br/>AGE:"+stu.age+"<br/>ADDRESS: "+stu.address;
+			    if(stu.roll==0)
+			    	document.getElementById("id1").innerHTML="<br/> Record Not found";
+			    else
+			    document.getElementById("id1").innerHTML=string;
+				document.getElementById("id1").style.display="inline";
+				document.getElementById("div2").style.display="none";
+			 }
+		
+		
+		//if(xhr.readyState==4 && xhr.status==500)
+		else
+			{
+		    document.getElementById("id1").style.display="inline";
+			document.getElementById("id1").innerHTML="Record Not Found.."; 
+			
+			}
+	}
+	xhr.send();
+}
+//DELETE STUDENT BY ROLL
+function deleteStudendByrollPage()
+{
+	hideAll();
+	document.getElementById("div4").style.display="inline";
+	document.getElementById("rolldel").value="";
+}
+
+function deleteStudendByroll()
+{
+	var roll=document.getElementById("rolldel").value;
+	if(isNaN(roll)|| roll<=0)
+		{
+		 alert("Enter Valid Roll Number...");
+		 return false;
+		}
+	var r=confirm("do You Want to delete Roll: "+document.getElementById("rolldel").value);
+	if (r != true)
+		return false;
+	url="http://192.168.50.184:8090/student/"+document.getElementById("rolldel").value;
+	xhr=new XMLHttpRequest(); 
+	xhr.open("DELETE",url,true);
+	xhr.setRequestHeader("Content-type", "application/json");
+	xhr.onreadystatechange=function()
+	{
+		if(xhr.status==200 && xhr.readyState==4)
+			{
+			  //alert(xhr.responseText);
+			  document.getElementById("id1").innerHTML="<br/>"+xhr.responseText;
+			  document.getElementById("id1").style.display="inline";
+			  document.getElementById("div4").style.display="none";
+			} 
+		else
+		{
+		document.getElementById("id1").style.display="inline";
+		document.getElementById("id1").innerHTML="Record Not Found..";
+		}
+	}
+	xhr.send();
+}
+
+//METHOD TO SHOW UPDATE PAGE
+function updateStudentPage()
+{
+	hideAll();
+	document.getElementById("div3").style.display="inline";
+	document.getElementById("rollupdate").value="";
+}
+
+//METHOD TO FETCH RECORD FROM DATABASE FOR UPDATION
+
+function getForUpdate()
+{
+	var roll=document.getElementById("rollupdate").value;
+	if(isNaN(roll)|| roll<=0)
+		{
+		 alert("Enter Valid Roll Number...");
+		 return false;
+		}
+	
+	hideAll();
+	//alert("fetching for updating");
+	url="http://192.168.50.184:8090/student/"+document.getElementById("rollupdate").value;
+	xhr=new XMLHttpRequest();
+	xhr.open("GET",url,true);
+	xhr.setRequestHeader("Content-type", "application/json");
+	xhr.onreadystatechange=function()
+	{
+		if(xhr.readyState==4 && xhr.status==200)
+			{
+			
+			
+			  //alert("REturn: " +xhr.responseText);
+			  var json=JSON.parse(xhr.responseText);
+			  document.getElementById("div5").style.display="inline";
+			  document.getElementById("rollU").value=json.roll;
+			  document.getElementById("nameU").value=json.name;
+			  document.getElementById("ageU").value=json.age;
+			  document.getElementById("addressU").value=json.address;
+			  document.getElementById("emailU").value=json.mailId;
+			  document.getElementById("mobileU").value=json.mobileNo;
+			  document.getElementById("eMobileU").value=json.emergencyNo;
+			  document.getElementById("courseU").value=json.courseName;
+			  document.getElementById("genderU").value=json.gender;
+			  document.getElementById("dobU").value=json.dob;
+			  if(json==null)
+			  {
+			  document.getElementById("div5").style.display="none";
+			  document.getElementById("id1").innerHTML="Record Not Found...";
+			  document.getElementById("id1").style.display="inline";
+			  } 
+			 
+			  
+			}
+		/* else
+		{
+		document.getElementById("id1").style.display="inline";
+		document.getElementById("id1").innerHTML="Record Not Found..";
+		} */
+	}
+	xhr.send();
+}
+
+//METHODE TO UPDATE RECORD
+function updateStudent()
+{
+	//alert("update");
+	 var stu;
+	 var url = "http://192.168.50.184:8090/student/"+document.getElementById("rollU").value;
+	xhr=new XMLHttpRequest();
+	xhr.open("PUT",url,true)
+	xhr.setRequestHeader("Content-type", "application/json"); //alert(url);
+    var data=JSON.stringify({
+        "roll":document.getElementById("rollU").value,
+        "name":document.getElementById("nameU").value,
+        "age":document.getElementById("ageU").value,
+        "mailId":document.getElementById("emailU").value,
+        "address":document.getElementById("addressU").value,
+        "dob":document.getElementById("dobU").value,
+        "courseName":document.getElementById("courseU").value,
+        "gender":document.getElementById("genderU").value,
+        "mobileNo":document.getElementById("mobileU").value,
+        "emergencyNo":document.getElementById("eMobileU").value});  //alert(data); 
+	xhr.onreadystatechange=function()
+	{	
+		 if(xhr.readyState==4 && xhr.status==200)
+			 { 
+                 //alert(xhr.responseText);
+                 document.getElementById("id1").innerHTML="Record Updated Successfully...";
+			 }
+	};
+	xhr.send(data);	
+	//alert("after Sent");
+	hideAll();
+	document.getElementById("id1").innerHTML=xhr.responseText;
+	document.getElementById("id1").style.display="inline"; 
+}
+
+//METHOD TO SHOW UPLOAD FILE
+function showUpload()
+{
+	hideAll();
+	document.getElementById("div7").style.display="inline";
+}
+
+//METHOD TO DOWNLOAD FILE
+
+	function downloadPage() 
+	{
+	  hideAll();
+		document.getElementById("pr2").style.display="inline";
+		document.getElementById("pr1").style.display="inline";
+		var string = " ";
+		var files = "";
+		var select = "<div><body><h2>List of Files</h2></body></div><br/><h3 id='pr2'></h3>";
+		document.getElementById("pr1").innerHTML = select;
+		document.getElementById("pr2").innerHTML = "No files available";
+		var xhttp = new XMLHttpRequest();
+		var url = "http://192.168.50.184:8090/downloadList";
+		xhttp.open("GET", url, false);
+		xhttp.setRequestHeader("Content-type", "application/json")
+		xhttp.onreadystatechange = function() {
+			if (xhttp.readyState == 4 && xhttp.status == 200) {
+				string = JSON.parse(xhttp.responseText);
+				for (var i = 0; i < string.length; i++) {
+					files = files
+							+ "<br/><a href='http://192.168.50.184:8090/download?type="
+							+ string[i] + "'>" + string[i] + "</a>";
+					document.getElementById("pr2").innerHTML = files;
+					//document.getElementById("pr2").style.display="inline";
+					
+
+				}
+			}
+		}
+		xhttp.send();
+		
+		return false;
+	} 
+
+
+
+</script>
+</head>
+
+
+<body>
+<div class="container">    
+      
+   
+     <div  class="page-header" style=" background-color:"><h1>SmarTek&nbsp;Consultency &nbsp;Service </h1>
+              <br/><h4>Student&nbsp; Management &nbsp; System</h4></div> <br/>
+              <div id="div9" >
+	 <button onclick="showRegisterPage()"  class="btn btn-default">REGISTRATION</button> &nbsp;&nbsp;&nbsp;  
+	 <button onclick="selectAll()" class="btn btn-default">SHOW ALL STUDENTS</button> &nbsp;&nbsp;&nbsp; 
+	 <button onclick="getStudendByrollPage()" class="btn btn-default">SHOW STUDENT BY ID</button> &nbsp;&nbsp;&nbsp; 
+	 <button onclick="updateStudentPage()" class="btn btn-default">UPDATE STUDENT</button> &nbsp;&nbsp;&nbsp; 
+	 <button onclick="deleteStudendByrollPage()" class="btn btn-default">DELETE STUDENT</button> &nbsp;&nbsp;&nbsp;
+	 <button onclick="showUpload()" class="btn btn-default">UPLOAD RESUME</button> &nbsp;&nbsp;&nbsp; <br/> <br/>
+	 <button onclick="downloadPage()" class="btn btn-default">DOWNLOAD</button> &nbsp;&nbsp;&nbsp;
+	 <button onclick="logout()" class="btn btn-default">LOGOUT</button> &nbsp;&nbsp;&nbsp;
+	 <hr/>
+	 </div>
+	 <div id="div1" class="container" style="display:none" >
+	 <p  align="center"> Registration of student</p>
+	 <table  >
+	<!--  <tr><td> Roll  </td><td><input type="text" id="roll"  class="form-control"  /> </td><td><p id="r" style="color: red;">   </td></tr>  -->
+	 <tr><td> Name  </td><td><input type="text" id="name" class="form-control"  /></td><td> <p id="n" style="color: red;">  </td></tr>
+	 <tr><td> Age  </td><td><input type="text" id="age" class="form-control"  readonly/> </td><td> <p id="a" style="color: red;"> </td></tr>
+	 <tr><td> Mail-Id  </td><td><input type="email" id="email" class="form-control" /> </td><td> <p id="e" style="color: red;">  </td></tr>
+	 <tr><td> Address  </td><td><textarea rows="4" cols="30" id="address" class="form-control" > </textarea> </td></tr>
+	<!--  <tr><td> DOB  </td><td><input type="text" id="dob" placeholder="yyyy-mm-dd" />   </td></tr> -->
+	  <tr><td> DOB  </td><td><input type="date" id="dob"data-date-inline-picker="true" onblur="calcage()" />   </td></tr>
+	 <tr><td> Course  </td><td><input type="text" id="course" class="form-control"  />   </td></tr>
+	 <tr><td> Gender  </td><td><select  id="gender" class="form-control" >  <option>--Select Gender--</option> <option value="Male">Male</option> <option value="Female">Female</option></select> </td></tr>
+	 <tr><td> Mobile  </td><td><input type="text"  id="mobile" class="form-control" /> </td><td> <p id="m" style="color: red;">   </td></tr>
+	 <tr><td> Emergency Mobile </td><td><input type="text"  id="eMobile"class="form-control"  /> </td><td> <p id="em" style="color: red;">  </td></tr>
+	 <tr><td>   </td><td> <button onclick=" return register()" class="btn btn-primary">Register</button>  </td></tr>
+	  <tr><td>   </td><td><p id="msg" style="color: red;"></p> </td></tr>
+	 
+	 </table>
+	 </div>  
+	 <br/>
+	 <p id="id1" style="color=red;"></p>  <br/> 
+	 <p id="v1"></p>
+	 
+	 <div id="div2" style="display:none"  > <br/> <br/> <table> <tr><td>
+	 <input type="text" id="rollfind" placeholder="Enter Roll to Search" class="form-control" /> </td></tr>
+    <tr><td>  <button onclick=" return getStudendByroll()" class="btn btn-primary">Find</button> </td></tr> </table>
+	 </div>  <br/>
+	  
+	  <div id="div3" style="display:none"  > <br/> <table> <tr><td>
+	 <input type="text" id="rollupdate" placeholder="Enter Roll for Update" class="form-control" /></td></tr>
+    <tr><td>  <button onclick="return getForUpdate()" class="btn btn-primary">Find</button></td></tr> </table>
+	 </div>  <br/>
+	  
+	 <div id="div4" style="display: none"><table> <tr><td>
+	 <input type="text" id="rolldel" placeholder="Enter Roll to Delete" class="form-control" /></td></tr>
+     <tr><td> <button onclick=" return deleteStudendByroll()" class="btn btn-primary">Delete</button></td></tr> </table>
+	 </div>   <br/>
+	 
+	 <div id="div5" style="display: none">
+	 <p  align="center"> Update Studebt Details</p>
+	 <table   align="center">
+	 <tr><td> Roll  </td><td><input type="text" id="rollU"  readonly="readonly" class="form-control"/>   </td></tr>
+	 <tr><td> Name  </td><td><input type="text" id="nameU" class="form-control"/>   </td></tr>
+	 <tr><td> Age  </td><td><input type="number" id="ageU" readonly class="form-control"/>   </td></tr>
+	 <tr><td> Mail-Id  </td><td><input type="email" id="emailU" class="form-control"/>   </td></tr>
+	 <tr><td> Address  </td><td><textarea rows="4" cols="50" id="addressU" class="form-control"></textarea> </td></tr>
+	 <tr><td> DOB  </td><td><input type="text" id="dobU" readonly class="form-control"/>   </td></tr>
+	 <tr><td> Course  </td><td><input type="text" id="courseU" class="form-control" />   </td></tr>
+	 <tr><td> Gender  </td><td> <input type="text" id="genderU"  readonly class="form-control" /> </td></tr>
+	 <tr><td> Mobile  </td><td><input type="text" id="mobileU" class="form-control" />   </td></tr>
+	 <tr><td> Emergency Mobile: </td><td><input type="text"  id="eMobileU" class="form-control" />   </td></tr>
+	 <tr><td>   </td><td> <button onclick="updateStudent()" class="btn btn-primary">Update</button>  </td></tr>
+	 </table>
+	 </div>   <br/>
+	 
+	 <!-- login    --> 
+	 <div id="div6" style="display: none">
+	 <table style="left: 30%"  align="center">
+	 <tr><th>Login Here</th></tr>
+	 <tr> <td>User Id  </td><td> <input type="text" id="nameL" class="form-control" />   </td></tr>
+	 <tr> <td>Password </td><td> <input type="password" id="rollL" class="form-control" />   </td></tr>
+	 <tr> <td>  </td><td> <input type="checkbox" id="check" />Remember Me  </td></tr>
+	 <tr> <td>  </td><td> <button onclick="login() " class="btn btn-primary">Login</button>  </td></tr>
+	  <tr> <td>  </td><td> <p id="error" style="color: red;" ></p>  </td></tr>
+	 </table>
+	 </div>
+	 
+	 <div id="div7" style="display: none">
+	  <form action="upload" method="POST" enctype="multipart/form-data" >
+	 Select a file :   <input type="file" id="file" name="file" accept="image/*">
+    <input type="submit">
+</form>
+	 </div>
+	      <p id="pr1" style="display: none"></p>
+	      <p id="pr2" style="display: none"></p>
+     
+     <!-- FOOTER     -->
+     <div  class="page-header" style="bottom: 0 ; width:100%; background-color: gray; margin-top:450px; bottom: 0;"> Copyright &copy; SmarTek.com 2016</div>
+ </div>  
+</body>
+</html>
+
